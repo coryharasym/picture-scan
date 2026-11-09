@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f5f0"><meta name="description" content="Turn photos into clean, printable PDFs. Your documents stay on your device.">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Picture Scan">
+<link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="style.css">
+<title>Picture Scan — A little less paper.</title>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="./" aria-label="Picture Scan home"><span class="brand-icon" aria-hidden="true">⌑</span> picture<span>scan</span></a><span class="privacy-badge"><span class="dot"></span> Only on your device</span></header>
+<main>
+<section class="intro"><div class="eyebrow">FROM PAPER TO PDF</div><h1>A little less paper.<br><span>A lot more possibility.</span></h1><p>Snap it. Straighten it. Share it.<br class="mobile-break"> Clean, printable documents in a few taps.</p></section>
+<div class="workspace">
+<section class="scan-column" aria-label="Scan pages">
+<div class="section-heading"><h2>Your pages <span id="pageCount" class="count">0</span></h2><button id="clearAll" class="text-button" hidden>Clear all</button></div>
+<div class="import-card" id="dropzone">
+<div class="scan-illustration" aria-hidden="true"><div class="corner tl"></div><div class="corner tr"></div><div class="paper"><span></span><i></i><i></i><i></i><i></i><b></b></div><div class="corner bl"></div><div class="corner br"></div><div class="scan-line"></div></div>
+<h3>Give your paper a fresh start.</h3><p>Letters, receipts, recipes, schoolwork.<br>Make a PDF worth keeping.</p>
+<div class="import-buttons"><button id="takePhoto" class="button primary"><span aria-hidden="true">＋</span> Take a photo</button><button id="choosePhotos" class="button secondary">Choose photos</button></div>
+<span class="import-note">Or drop pictures here · JPG, PNG, WebP &amp; supported phone photos</span>
+<input type="file" id="cameraInput" accept="image/*" capture="environment" hidden><input type="file" id="photosInput" accept="image/*" multiple hidden>
+</div>
+<div id="pages" class="pages" aria-live="polite"></div>
+<div class="privacy-note"><span class="shield" aria-hidden="true">✓</span><div><strong>Your paper. Your business.</strong><p>Photos are processed on this device. No uploads, accounts, or saved history. Save your PDF before closing this page.</p></div></div>
+</section>
+<aside class="export-card" aria-label="PDF settings"><div class="eyebrow">THE FINISHED THING</div><h2>Make it a document.</h2><p>A neat PDF, ready for your next step.</p><label for="filename">Document name</label><div class="filename-field"><input id="filename" value="My document" maxlength="100" autocomplete="off"><span>.pdf</span></div><label for="paperSize">Paper size</label><select id="paperSize"><option value="letter">Letter · 8.5 × 11 in</option><option value="a4">A4 · 210 × 297 mm</option></select><div class="export-detail"><span>Page layout</span><strong>Fit to page · small margins</strong></div><div class="export-detail"><span>Pages</span><strong id="exportCount">No pages yet</strong></div><button id="makePdf" class="button primary full" disabled>Create PDF <span aria-hidden="true">↗</span></button><p class="export-help">Add a photo to get started.<br>Then share it or save it to Files.</p><div class="tip"><span aria-hidden="true">✧</span><p><strong>A better scan starts here</strong><br>Lay your page on a contrasting surface, keep it well lit, and include all four corners.</p></div></aside>
+</div>
+<footer>Less clutter. More room for what matters.<span>PICTURE SCAN</span></footer>
+</main>
+<dialog id="editor" class="editor-dialog"><div class="dialog-heading"><div><div class="eyebrow">MAKE IT PRINT-READY</div><h2 id="editorTitle">Adjust your scan</h2></div><button id="closeEditor" class="icon-button" aria-label="Cancel changes">×</button></div><div class="editor-layout"><div class="edit-stage"><svg id="cropSvg" viewBox="0 0 1000 1000" aria-label="Photo crop with four adjustable corners"><image id="cropImage" width="1000" height="1000" preserveAspectRatio="none"/><path id="cropShade" fill="rgba(15,30,28,.55)" fill-rule="evenodd"/><polygon id="cropOutline" fill="none" stroke="#bdffb9" stroke-width="3"/><g id="cropHandles"></g></svg><canvas id="previewCanvas" hidden></canvas></div><div class="edit-controls"><p class="editor-instruction" id="cropHint">Drag the four corners to the edges of your page. Use the arrow keys for fine adjustments.</p><div class="crop-actions"><button id="autoDetect" class="button secondary small">Find edges</button><button id="fullPhoto" class="button secondary small">Full photo</button><button id="rotatePhoto" class="button secondary small">Rotate ↻</button></div><label for="scanMode">Finish</label><select id="scanMode"><option value="clean">Clean colour</option><option value="original">Original colour</option><option value="gray">Grayscale</option><option value="bw">Black &amp; white</option></select><label for="brightness">Brightness <output id="brightnessValue">0</output></label><input id="brightness" type="range" min="-40" max="40" value="0"><button id="previewScan" class="button secondary full">Preview flattened page</button><button id="backToCrop" class="text-button" hidden>← Back to corners</button><div class="editor-bottom"><button id="saveScan" class="button primary full">Add page</button><p>Check every edge before saving.</p></div></div></div></dialog>
+<dialog id="pdfDialog" class="pdf-dialog"><button id="closePdf" class="icon-button float-close" aria-label="Close PDF options">×</button><div class="done-icon" aria-hidden="true">✓</div><div class="eyebrow">ALL TIDIED UP</div><h2>Your PDF is ready.</h2><p id="pdfSummary"></p><button id="sharePdf" class="button primary full">Share / Save to Files ↗</button><a id="downloadPdf" class="button secondary full" download>Download PDF</a><p class="pdf-help">On iPhone, choose <strong>Save to Files</strong> in the share sheet. If sharing isn’t available, download the PDF and use its Share button.</p></dialog>
+<div id="status" class="status" role="status" aria-live="polite" hidden></div><div id="busy" class="busy" hidden><span class="spinner"></span><p id="busyText">Preparing your page…</p></div>
+<script type="module" src="app.js"></script>
+</body></html>
