@@ -39,3 +39,15 @@ test('PDF has correct byte offsets, stream lengths, page count and paper size',a
   const a4=await buildPdf([{width:100,height:100,jpeg}],'a4').text();assert.match(a4,/595.28 841.89/);
 });
 test('filenames are safe and empty documents are rejected',()=>{assert.equal(safeFilename('../My:scan.pdf'),'..-My-scan');assert.equal(safeFilename('   '),'My document');assert.throws(()=>buildPdf([]));});
+
+test('sharing sends only a named PDF file, with no separate text/title item',async()=>{
+  const {preparePdfExport,pdfShareData}=await import('../export.js');
+  const original=new Blob(['%PDF-1.4\nTest bytes\n%%EOF'],{type:'application/pdf'});
+  const {file,download}=await preparePdfExport(original,'A test document');
+  assert.equal(file.name,'A test document.pdf');assert.equal(file.type,'application/pdf');
+  const payload=pdfShareData(file);assert.deepEqual(Object.keys(payload),['files']);assert.equal(payload.files.length,1);assert.equal(payload.files[0],file);
+  assert.equal(download.name,file.name);assert.equal(download.type,'application/octet-stream');
+  assert.deepEqual(new Uint8Array(await file.arrayBuffer()),new Uint8Array(await original.arrayBuffer()));
+  assert.deepEqual(new Uint8Array(await download.arrayBuffer()),new Uint8Array(await original.arrayBuffer()));
+  await assert.rejects(preparePdfExport(new Blob(['not a PDF']),'Invalid'),/not a PDF/);
+});

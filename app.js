@@ -1,12 +1,13 @@
 import {detectDocument,validQuad,flatten} from './imaging.js';
-import {buildPdf,safeFilename} from './pdf.js';
+import {buildPdf} from './pdf.js';
+import {preparePdfExport,pdfShareData} from './export.js';
 const $=id=>document.getElementById(id),pages=[];
 const modes={clean:'Clean colour',original:'Original colour',gray:'Grayscale',bw:'Black & white'};
-let current=null,pending=[],importing=false,pdfFile=null,pdfUrl=null,statusTimer,processing=false,worker=null;
+let current=null,pending=[],importing=false,pdfFile=null,pdfUrl=null,downloadUrl=null,statusTimer,processing=false,worker=null;
 try{worker=new Worker(new URL('./processor.js',import.meta.url),{type:'module'});}catch{}
 function announce(message){$('status').textContent=message;$('status').hidden=false;clearTimeout(statusTimer);statusTimer=setTimeout(()=>$('status').hidden=true,6500);}
 function busy(on,message='Preparing your page…'){if(on){const host=$('editor').open?$('editor'):document.body;host.append($('busy'));}$('busyText').textContent=message;$('busy').hidden=!on;}
-function invalidatePdf(){pdfFile=null;if(pdfUrl){URL.revokeObjectURL(pdfUrl);pdfUrl=null;}$('downloadPdf').removeAttribute('href');}
+function invalidatePdf(){pdfFile=null;if(pdfUrl){URL.revokeObjectURL(pdfUrl);pdfUrl=null;}if(downloadUrl){URL.revokeObjectURL(downloadUrl);downloadUrl=null;}$('downloadPdf').removeAttribute('href');$('openPdf').removeAttribute('href');}
 function updatePages(){
   invalidatePdf();$('pageCount').textContent=pages.length;$('exportCount').textContent=pages.length?`${pages.length} ${pages.length===1?'page':'pages'}`:'No pages yet';$('makePdf').disabled=!pages.length;$('clearAll').hidden=!pages.length;$('pages').replaceChildren();
   pages.forEach((p,index)=>{
@@ -121,11 +122,11 @@ $('clearAll').onclick=()=>{if(!confirm('Clear all pages? Save your PDF first if 
 $('filename').oninput=invalidatePdf;$('paperSize').onchange=invalidatePdf;
 $('makePdf').onclick=async()=>{
   if(!pages.length||processing)return;processing=true;busy(true,'Putting your PDF together…');
-  try{invalidatePdf();const input=[];for(const page of pages)input.push({width:page.width,height:page.height,jpeg:new Uint8Array(await page.blob.arrayBuffer())});const blob=buildPdf(input,$('paperSize').value),name=`${safeFilename($('filename').value)}.pdf`;pdfFile=new File([blob],name,{type:'application/pdf'});pdfUrl=URL.createObjectURL(blob);$('downloadPdf').href=pdfUrl;$('downloadPdf').download=name;$('pdfSummary').textContent=`${name} · ${pages.length} ${pages.length===1?'page':'pages'} · ${(blob.size/1024/1024).toFixed(1)} MB`;
-    let share=false;try{share=!!navigator.canShare?.({files:[pdfFile]});}catch{}$('sharePdf').hidden=!share;$('pdfDialog').showModal();
+  try{invalidatePdf();const input=[];for(const page of pages)input.push({width:page.width,height:page.height,jpeg:new Uint8Array(await page.blob.arrayBuffer())});const blob=buildPdf(input,$('paperSize').value),prepared=await preparePdfExport(blob,$('filename').value);pdfFile=prepared.file;pdfUrl=URL.createObjectURL(pdfFile);downloadUrl=URL.createObjectURL(prepared.download);$('openPdf').href=pdfUrl;$('downloadPdf').href=downloadUrl;$('downloadPdf').download=pdfFile.name;const name=pdfFile.name;$('pdfSummary').textContent=`${name} · ${pages.length} ${pages.length===1?'page':'pages'} · ${(blob.size/1024/1024).toFixed(1)} MB`;
+    let share=false;try{share=!!navigator.canShare?.(pdfShareData(pdfFile));}catch{}$('sharePdf').hidden=!share;$('pdfDialog').showModal();
   }catch(e){announce(`Could not create the PDF. ${e.message}`);}finally{busy(false);processing=false;}
 };
-$('sharePdf').onclick=async()=>{if(!pdfFile)return;try{await navigator.share({files:[pdfFile],title:pdfFile.name});}catch(e){if(e.name!=='AbortError')announce('Sharing could not open. Use Download PDF instead.');}};
+$('sharePdf').onclick=async()=>{if(!pdfFile)return;try{await navigator.share(pdfShareData(pdfFile));}catch(e){if(e.name!=='AbortError')announce('Sharing could not open. Use Download PDF instead.');}};
 $('closePdf').onclick=()=>$('pdfDialog').close();
 window.addEventListener('beforeunload',event=>{if(pages.length||current){event.preventDefault();event.returnValue='';}});
 // Cache only application assets for offline launches. Photos and PDFs never enter the cache.

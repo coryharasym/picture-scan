@@ -33,4 +33,4 @@ Photos are normalized to a maximum 2400-pixel edge; output scans have a maximum 
 
 ## Files
 
-`index.html` / `style.css`: interface. `app.js`: session and editing flow. `imaging.js`: geometry, edge suggestions, and pixel processing. `processor.js`: background worker. `pdf.js`: JPEG-backed PDF writer. `sw.js`: static-asset-only offline cache.
+`index.html` / `style.css`: interface. `app.js`: session and editing flow. `imaging.js`: geometry, edge suggestions, and pixel processing. `processor.js`: background worker. `pdf.js`: JPEG-backed PDF writer. `export.js`: file-only sharing, PDF preview, and download attachment preparation. `sw.js`: static-asset-only offline cache.
