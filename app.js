@@ -257,8 +257,7 @@ async function nextImport(){
 }
 $('takePhoto').onclick=()=>$('cameraInput').click();
 $('choosePhotos').onclick=()=>$('photosInput').click();
-$('choosePdfs').onclick=()=>$('pdfsInput').click();
-for(const id of ['cameraInput','photosInput','pdfsInput'])$(id).onchange=event=>{const files=[...event.target.files];event.target.value='';importFiles(files);};
+for(const id of ['cameraInput','photosInput','filesInput'])$(id).onchange=event=>{const files=[...event.target.files];event.target.value='';importFiles(files);};
 for(const name of ['dragenter','dragover'])$('dropzone').addEventListener(name,event=>{
   if(!event.dataTransfer.types.includes('Files')) return;
   event.preventDefault();

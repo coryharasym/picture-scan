@@ -1,4 +1,4 @@
-const CACHE='picture-scan-app-v3';
+const CACHE='picture-scan-app-v4';
 const ASSETS=['./','./index.html','./style.css','./app.js','./imaging.js','./processor.js','./pdf.js','./export.js','./pdf-toolkit.js',
   './vendor/pdf-lib.min.js','./vendor/pdfjs/pdf.min.mjs','./vendor/pdfjs/pdf.worker.min.mjs',
   './vendor/pdfjs/resource-index.js','./vendor/pdfjs/resources.bin','./vendor/pdfjs/openjpeg_nowasm_fallback.js',

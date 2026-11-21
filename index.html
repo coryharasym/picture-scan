@@ -17,9 +17,9 @@
 <div class="import-card" id="dropzone">
 <div class="scan-illustration" aria-hidden="true"><div class="corner tl"></div><div class="corner tr"></div><div class="paper"><span></span><i></i><i></i><i></i><i></i><b></b></div><div class="corner bl"></div><div class="corner br"></div><div class="scan-line"></div></div>
 <h3>Add scans or PDFs</h3>
-<div class="import-buttons"><button id="takePhoto" class="button primary"><span aria-hidden="true">＋</span> Take a photo</button><button id="choosePhotos" class="button secondary">Choose photos</button><button id="choosePdfs" class="button secondary">Import PDFs</button></div>
-<span class="import-note">Drop photos or PDF files here</span>
-<input type="file" id="cameraInput" accept="image/*" capture="environment" hidden><input type="file" id="photosInput" accept="image/*" multiple hidden><input type="file" id="pdfsInput" accept="application/pdf,.pdf" multiple hidden>
+<div class="import-buttons"><button id="takePhoto" class="button primary"><span aria-hidden="true">＋</span> Take a photo</button><button id="choosePhotos" class="button secondary">Choose photos</button><label id="chooseFiles" class="button secondary">Import Files<input type="file" id="filesInput" multiple aria-describedby="importNote"></label></div>
+<span class="import-note" id="importNote">Choose PDFs or photos from Files, or drop them here.</span>
+<input type="file" id="cameraInput" accept="image/*" capture="environment" hidden><input type="file" id="photosInput" accept="image/*" multiple hidden>
 </div>
 <div id="pages" class="pages" aria-live="polite"></div>
 <div class="privacy-note"><span class="shield" aria-hidden="true">✓</span><div><strong>Your paper. Your business.</strong><p>Photos and PDFs are processed on this device. No uploads, accounts, or saved history. Save your PDF before closing this page.</p></div></div>
